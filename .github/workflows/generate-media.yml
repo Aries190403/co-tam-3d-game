@@ -2,15 +2,6 @@ name: Generate gameplay media
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'src/**'
-      - 'scripts/**'
-      - 'index.html'
-      - 'package.json'
-      - 'vite.config.js'
-      - '.github/workflows/generate-media.yml'
 
 permissions:
   contents: write
@@ -18,7 +9,7 @@ permissions:
 jobs:
   generate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,16 +22,17 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Chromium and Linux dependencies
-        run: npx playwright install --with-deps chromium
+      - name: Install Chromium and capture tools
+        run: |
+          npx playwright install --with-deps chromium
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg xvfb x11-utils
 
       - name: Build standalone game
         run: npm run build
 
       - name: Record gameplay video
-        run: |
-          chmod +x scripts/record-demo.sh
-          bash scripts/record-demo.sh
+        run: bash scripts/record-demo.sh
 
       - name: Copy standalone HTML and extract screenshots
         run: |
