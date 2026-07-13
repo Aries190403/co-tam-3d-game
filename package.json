@@ -1,0 +1,19 @@
+{
+  "name": "co-tam-3d-game",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5173",
+    "build": "vite build",
+    "capture": "node scripts/capture.mjs"
+  },
+  "dependencies": {
+    "@babylonjs/core": "latest",
+    "vite": "latest"
+  },
+  "devDependencies": {
+    "playwright-core": "latest",
+    "vite-plugin-singlefile": "^2.3.3"
+  }
+}
