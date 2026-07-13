@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cô Tấm: Hành trình về làng</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; font-family: Inter, system-ui, sans-serif; background: #07131f; }
+    #renderCanvas { width: 100%; height: 100%; touch-action: none; display: block; }
+    #hud { position: fixed; inset: 0; pointer-events: none; color: white; text-shadow: 0 2px 7px rgba(0,0,0,.65); }
+    .topbar { display: flex; justify-content: space-between; align-items: flex-start; padding: 20px 22px; gap: 16px; }
+    .panel { background: rgba(9, 24, 30, .68); border: 1px solid rgba(255,255,255,.2); backdrop-filter: blur(8px); border-radius: 16px; padding: 12px 16px; box-shadow: 0 8px 24px rgba(0,0,0,.24); }
+    .title { font-weight: 800; font-size: 22px; color: #ffe8a3; }
+    .sub { opacity: .9; font-size: 13px; margin-top: 4px; }
+    .stats { display: flex; gap: 10px; }
+    .stat { min-width: 116px; text-align: center; }
+    .stat b { display: block; font-size: 27px; }
+    .stat span { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; opacity: .85; }
+    #message { position: fixed; left: 50%; top: 18%; transform: translateX(-50%); font-weight: 800; font-size: 26px; background: rgba(25,20,8,.72); border: 1px solid rgba(255,230,140,.6); padding: 12px 22px; border-radius: 999px; opacity: 0; transition: opacity .25s; }
+    #message.show { opacity: 1; }
+    #controls { position: fixed; left: 22px; bottom: 20px; font-size: 13px; line-height: 1.55; }
+    #objective { position: fixed; right: 22px; bottom: 20px; width: 280px; font-size: 13px; line-height: 1.5; }
+    #progress { margin-top: 9px; height: 9px; background: rgba(255,255,255,.15); border-radius: 999px; overflow: hidden; }
+    #progress > div { height: 100%; width: 0%; background: linear-gradient(90deg,#ffcd54,#fff0a0); transition: width .25s; }
+    #endScreen { position: fixed; inset: 0; display: none; place-items: center; background: rgba(1,8,12,.72); pointer-events: auto; }
+    #endScreen.show { display: grid; }
+    #endCard { width: min(560px, 88vw); text-align: center; padding: 34px; border-radius: 24px; background: linear-gradient(145deg,rgba(20,65,56,.96),rgba(16,27,53,.96)); border: 1px solid rgba(255,255,255,.25); box-shadow: 0 24px 90px rgba(0,0,0,.45); }
+    #endTitle { font-size: 38px; margin: 0 0 10px; color: #ffe38b; }
+    #endText { font-size: 17px; line-height: 1.55; }
+    button { pointer-events: auto; cursor: pointer; margin-top: 18px; border: 0; border-radius: 999px; padding: 12px 24px; font-size: 16px; font-weight: 800; background: #ffd25c; color: #213029; }
+  </style>
+</head>
+<body>
+  <canvas id="renderCanvas"></canvas>
+  <div id="hud">
+    <div class="topbar">
+      <div class="panel">
+        <div class="title">CÔ TẤM: HÀNH TRÌNH VỀ LÀNG</div>
+        <div class="sub">Nhặt đủ cá, tránh quái vật và chạy qua cổng làng trước khi hết giờ.</div>
+      </div>
+      <div class="stats">
+        <div class="panel stat"><b id="fishCount">0/8</b><span>Cá đã nhặt</span></div>
+        <div class="panel stat"><b id="timer">03:00</b><span>Thời gian</span></div>
+        <div class="panel stat"><b id="hearts">♥♥♥</b><span>Sinh lực</span></div>
+      </div>
+    </div>
+    <div id="message">Đã nhặt được cá!</div>
+    <div id="controls" class="panel"><b>Điều khiển</b><br>WASD / phím mũi tên: di chuyển<br>Shift: chạy nhanh · R: chơi lại</div>
+    <div id="objective" class="panel"><b>Nhiệm vụ</b><br><span id="objectiveText">Tìm 8 con cá đang phát sáng trong làng.</span><div id="progress"><div></div></div></div>
+    <div id="endScreen"><div id="endCard"><h1 id="endTitle"></h1><div id="endText"></div><button onclick="location.reload()">Chơi lại</button></div></div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
