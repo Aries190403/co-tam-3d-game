@@ -1,0 +1,63 @@
+name: Generate gameplay media
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'scripts/**'
+      - 'index.html'
+      - 'package.json'
+      - 'vite.config.js'
+      - '.github/workflows/generate-media.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Chromium and Linux dependencies
+        run: npx playwright install --with-deps chromium
+
+      - name: Build standalone game
+        run: npm run build
+
+      - name: Record gameplay video
+        run: |
+          chmod +x scripts/record-demo.sh
+          bash scripts/record-demo.sh
+
+      - name: Copy standalone HTML and extract screenshots
+        run: |
+          cp dist/index.html cotam_game.html
+          mkdir -p screenshots
+          ffmpeg -y -ss 3  -i media/cotam_gameplay.mp4 -frames:v 1 screenshots/preview-03s.png
+          ffmpeg -y -ss 12 -i media/cotam_gameplay.mp4 -frames:v 1 screenshots/preview-12s.png
+          ffmpeg -y -ss 24 -i media/cotam_gameplay.mp4 -frames:v 1 screenshots/preview-24s.png
+
+      - name: Commit generated files
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add cotam_game.html media/cotam_gameplay.mp4 screenshots
+          if git diff --cached --quiet; then
+            echo 'No generated changes to commit.'
+          else
+            git commit -m 'Generate standalone game, gameplay video and screenshots'
+            git push
+          fi
