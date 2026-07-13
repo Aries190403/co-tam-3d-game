@@ -2,9 +2,22 @@ name: Generate gameplay media
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'scripts/**'
+      - 'index.html'
+      - 'package.json'
+      - 'vite.config.js'
+      - '.github/workflows/generate-media.yml'
 
 permissions:
   contents: write
+
+concurrency:
+  group: generate-gameplay-media
+  cancel-in-progress: true
 
 jobs:
   generate:
